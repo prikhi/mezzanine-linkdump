@@ -1,4 +1,8 @@
+import random
+
+from django.conf import settings
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from mptt.managers import TreeManager
 from mptt.models import MPTTModel, TreeForeignKey
 from mezzanine.core.models import Slugged, TimeStamped, Ownable
@@ -24,12 +28,30 @@ class Dump(Slugged, TimeStamped, Ownable):
         :class:`DumpCategories <DumpCategory>` the Dump belongs to.
 
     """
+    link = models.URLField()
+    description = models.CharField(max_length=200)
+    visits = models.IntegerField(default=0, editable=False)
+    categories = models.ManyToManyField("DumpCategory",
+                                        verbose_name=_("Categories"),
+                                        blank=True, related_name="dumps")
+
+    class Meta:
+        verbose_name = _("Link")
+        verbose_name_plural = _("Links")
+        ordering = ("title",)
 
     def save(self, *args, **kwargs):
         """Randomly generate a slug if one is not entered."""
+        if not self.slug:
+            self.slug = generate_random_slug()
+        super(Dump, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        """Return the redirecting URL."""
+        return "/"
 
 
-class DumpCategory(Slugged, MPTTModel):
+class DumpCategory(MPTTModel, Slugged):
     """Categorizes :class:`Dumps <Dump>`.
 
     .. attribute:: parent
@@ -41,5 +63,27 @@ class DumpCategory(Slugged, MPTTModel):
         The ``TreeManager`` for the category tree.
 
     """
-
+    parent = TreeForeignKey('self', null=True, blank=True, db_index=True)
     tree = TreeManager()
+
+    class Meta:
+        verbose_name = _("Link Category")
+        verbose_name_plural = _("Link Categories")
+
+
+def generate_random_slug(length=None, alphabet=None):
+    length = length or getattr(settings, 'LINKDUMP_SLUG_LENGTH', 4)
+    alphabet = alphabet or getattr(
+        settings, 'LINKDUMP_SLUG_CHOICES',
+        'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890')
+    slug = ''.join([random.choice(alphabet) for i in range(length)])
+
+    # Check if this slug already exists, if not, return this new slug
+    try:
+        Dump.objects.get(slug=slug)
+    except Dump.DoesNotExist:
+        return slug
+
+    # Otherwise create a new slug which is +1 character longer than the
+    # regular one.
+    return generate_random_slug(length=length + 1)
