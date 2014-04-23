@@ -10,12 +10,9 @@ def link_dump_list(request, category=None, template="linkdump/list.html"):
     """Display the list of links, optionally filtered by category."""
     if category is not None:
         categories = [get_object_or_404(DumpCategory, slug=category)]
-        context = {"categories": categories, "category": category}
     else:
-        non_categorized_dumps = Dump.objects.filter(categories=None)
         categories = DumpCategory.objects.all()
-        context = {"categories": categories, "category": category,
-                   "non_categorized_dumps": non_categorized_dumps}
+    context = {"categories": categories, "category": category}
     return render(request, template, context)
 
 

@@ -35,7 +35,7 @@
 
 {% block main %}
   {% if category %}
-    {% trans "Viewing posts for the category" %} {{ category }}
+    {% trans "Viewing links for the category" %} {{ category }}
   {% endif %}
 
   <table class="table table-hover table-striped table-condensed">
@@ -47,15 +47,6 @@
       </tr>
     </thead>
     <tbody>
-      {% for dump in non_categorized_dumps %}
-        <tr class="clickable">
-          <td><a href="{{ dump.get_absolute_url }}">
-            {{ dump.title }}
-          </a></td>
-          <td><a href="{{ dump.get_absolute_url }}">{{ dump.description }}</a></td>
-          <td><a href="{{ dump.get_absolute_url }}">{{ dump.views }}</a></td>
-        </tr>
-      {% endfor %}
       {% recursetree categories %}
         <tr class="active clickable">
           <td colspan="3"><a href="{{ node.get_absolute_url }}">

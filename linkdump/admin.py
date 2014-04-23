@@ -8,9 +8,8 @@ class DumpAdmin(admin.ModelAdmin):
     """Admin class for Dumps."""
 
     list_display = ("title", "description", "views", "link", "user")
-    list_filter = ("user", "categories")
-    filter_horizontal = ("categories",)
-    search_fields = ("title", "description", "categories")
+    list_filter = ("user", "category")
+    search_fields = ("title", "description", "category")
     date_hierarchy = "created"
 
 

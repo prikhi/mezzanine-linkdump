@@ -24,17 +24,16 @@ class Dump(Slugged, TimeStamped, Ownable):
 
         The number of views this Dump has received.
 
-    .. attribute:: categories
+    .. attribute:: category
 
-        :class:`DumpCategories <DumpCategory>` the Dump belongs to.
+        The :class:`DumpCategory` the Dump belongs to.
 
     """
     link = models.URLField()
     description = models.CharField(max_length=200)
     views = models.IntegerField(default=0, editable=False)
-    categories = models.ManyToManyField("DumpCategory",
-                                        verbose_name=_("Categories"),
-                                        blank=True, related_name="dumps")
+    category = models.ForeignKey("DumpCategory", verbose_name=_("Category"),
+                                 related_name="dumps")
 
     class Meta:
         verbose_name = _("Link")
