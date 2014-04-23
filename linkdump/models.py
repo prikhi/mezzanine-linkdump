@@ -1,6 +1,7 @@
 import random
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from mptt.managers import TreeManager
@@ -19,9 +20,9 @@ class Dump(Slugged, TimeStamped, Ownable):
 
         A brief description about the Dump.
 
-    .. attribute:: visits
+    .. attribute:: views
 
-        The number of visits this Dump has received.
+        The number of views this Dump has received.
 
     .. attribute:: categories
 
@@ -30,7 +31,7 @@ class Dump(Slugged, TimeStamped, Ownable):
     """
     link = models.URLField()
     description = models.CharField(max_length=200)
-    visits = models.IntegerField(default=0, editable=False)
+    views = models.IntegerField(default=0, editable=False)
     categories = models.ManyToManyField("DumpCategory",
                                         verbose_name=_("Categories"),
                                         blank=True, related_name="dumps")
@@ -48,7 +49,8 @@ class Dump(Slugged, TimeStamped, Ownable):
 
     def get_absolute_url(self):
         """Return the redirecting URL."""
-        return "/"
+        return reverse("linkdump.views.link_dump_redirect",
+                       kwargs={'dump_slug': self.slug})
 
 
 class DumpCategory(MPTTModel, Slugged):
@@ -69,6 +71,14 @@ class DumpCategory(MPTTModel, Slugged):
     class Meta:
         verbose_name = _("Link Category")
         verbose_name_plural = _("Link Categories")
+
+    class MPTTMeta:
+        order_insertion_by=['title']
+
+    def get_absolute_url(self):
+        """Return the redirecting URL."""
+        return reverse("linkdump.views.link_dump_list",
+                       kwargs={'category': self.slug})
 
 
 def generate_random_slug(length=None, alphabet=None):

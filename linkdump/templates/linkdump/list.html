@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load i18n future mptt_tags mezzanine_tags linkdump_filters %}
+
+{% block meta_title %}{% trans "Link" %}{% endblock %}
+
+{% block meta_description %}{% metablock %}
+  {% trans "View shared links." %}
+{% endmetablock %}{% endblock %}
+
+{% block extra_css %}
+  <style>
+    .clickable {
+      cursor: pointer;
+    }
+    .clickable td a:hover {
+      text-decoration: none;
+    }
+  </style>
+{% endblock %}
+
+{% block title %}
+  {% if page %}
+    {% editable page.title %}{{ page.title }}{% endeditable %}
+  {% else %}
+    {% trans "Link List" %}
+  {% endif %}
+{% endblock %}
+
+{% block breadcrumb_menu %}
+  {{ block.super }}
+  {% if category %}
+    <li>{% trans "Category:" %} {{ category }}</li>
+  {% endif %}
+{% endblock %}
+
+{% block main %}
+  {% if category %}
+    {% trans "Viewing posts for the category" %} {{ category }}
+  {% endif %}
+
+  <table class="table table-hover table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>{% trans "Name" %}</th>
+        <th>{% trans "Description" %}</th>
+        <th>{% trans "Views" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dump in non_categorized_dumps %}
+        <tr class="clickable">
+          <td><a href="{{ dump.get_absolute_url }}">
+            {{ dump.title }}
+          </a></td>
+          <td><a href="{{ dump.get_absolute_url }}">{{ dump.description }}</a></td>
+          <td><a href="{{ dump.get_absolute_url }}">{{ dump.views }}</a></td>
+        </tr>
+      {% endfor %}
+      {% recursetree categories %}
+        <tr class="active clickable">
+          <td colspan="3"><a href="{{ node.get_absolute_url }}">
+            {{ node.level|int_to_tabs|safe }}{{ node.title }}
+          </a></td>
+        </tr>
+        {% for dump in node.dumps.all %}
+          <tr class="clickable">
+            <td><a href="{{ dump.get_absolute_url }}">
+                {{ node.level|add:1|int_to_tabs|safe }}{{ dump.title }}
+            </a></td>
+            <td><a href="{{ dump.get_absolute_url }}">{{ dump.description }}</a></td>
+            <td><a href="{{ dump.get_absolute_url }}">{{ dump.views }}</a></td>
+          </tr>
+        {% endfor %}
+        {{ children }}
+      {% endrecursetree %}
+    </tbody>
+  </table>
+{% endblock %}
+
+
+{% block extra_js %}
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+          $(".clickable").click(function() {
+                window.document.location = $(this).find('a').attr("href");
+          });
+    });
+</script>
+{% endblock %}
