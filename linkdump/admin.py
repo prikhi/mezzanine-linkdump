@@ -7,9 +7,10 @@ from .models import Dump, DumpCategory
 class DumpAdmin(admin.ModelAdmin):
     """Admin class for Dumps."""
 
-    list_display = ("title", "description", "views", "link", "user")
+    list_display = ("title", "description", "views", "category", "link",
+                    "user")
     list_filter = ("user", "category")
-    search_fields = ("title", "description", "category")
+    search_fields = ("title", "description", "category__title")
     date_hierarchy = "created"
 
 

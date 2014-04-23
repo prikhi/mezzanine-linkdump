@@ -29,8 +29,8 @@ class Dump(Slugged, TimeStamped, Ownable):
         The :class:`DumpCategory` the Dump belongs to.
 
     """
-    link = models.URLField()
-    description = models.CharField(max_length=200)
+    link = models.URLField(verbose_name="External URL")
+    description = models.CharField(max_length=200, blank=True)
     views = models.IntegerField(default=0, editable=False)
     category = models.ForeignKey("DumpCategory", verbose_name=_("Category"),
                                  related_name="dumps")
@@ -43,7 +43,7 @@ class Dump(Slugged, TimeStamped, Ownable):
     def save(self, *args, **kwargs):
         """Randomly generate a slug if one is not entered."""
         if not self.slug:
-            self.slug = generate_random_slug()
+            self.slug = _generate_random_slug()
         super(Dump, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -68,8 +68,8 @@ class DumpCategory(MPTTModel, Slugged):
     tree = TreeManager()
 
     class Meta:
-        verbose_name = _("Link Category")
-        verbose_name_plural = _("Link Categories")
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
 
     class MPTTMeta:
         order_insertion_by=['title']
@@ -80,7 +80,7 @@ class DumpCategory(MPTTModel, Slugged):
                        kwargs={'category': self.slug})
 
 
-def generate_random_slug(length=None, alphabet=None):
+def _generate_random_slug(length=None, alphabet=None):
     length = length or getattr(settings, 'LINKDUMP_SLUG_LENGTH', 4)
     alphabet = alphabet or getattr(
         settings, 'LINKDUMP_SLUG_CHOICES',
