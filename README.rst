@@ -27,7 +27,7 @@ Include the urls into your project's ``urls.py``::
         ("^", include("mezzanine.urls")),
     )
 
-If you want a shorter link for the redirects, route the path to the
+If you want a shorter link for the redirects, route the URL to the
 ``linkdump.views.link_dump_redirect`` view::
 
     urlpatterns += patterns('',
