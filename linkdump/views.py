@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.db.models import F
 from django.shortcuts import get_object_or_404
+from mezzanine.generic.models import Keyword
 from mezzanine.utils.views import render
 
 from .models import Dump, DumpCategory
@@ -14,6 +15,15 @@ def link_dump_list(request, category=None, template="linkdump/list.html"):
         categories = DumpCategory.objects.all()
     context = {"categories": categories, "category": category}
     return render(request, template, context)
+
+
+def link_dump_tag_list(request, keyword_slug,
+                       template="linkdump/tag_list.html"):
+    """Display a list of links for a specific Keyword."""
+    keyword = get_object_or_404(Keyword, slug=keyword_slug)
+    dumps = Dump.objects.filter(tags_string__contains=keyword.title).order_by(
+        '-views')
+    return render(request, template, {'keyword': keyword, 'dumps': dumps})
 
 
 def link_dump_redirect(request, dump_slug):

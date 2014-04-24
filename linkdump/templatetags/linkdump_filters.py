@@ -8,3 +8,9 @@ register = template.Library()
 def int_to_tabs(integer):
     """Return 8 spaces per integer."""
     return integer * 8 * '&nbsp;'
+
+
+@register.filter('mult')
+def multiply(integer, multiplier):
+    """Multiple two numbers."""
+    return integer * multiplier

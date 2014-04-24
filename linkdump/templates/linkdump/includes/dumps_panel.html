@@ -1,4 +1,4 @@
-{% load linkdump_tags i18n %}
+{% load linkdump_tags linkdump_filters keyword_tags i18n %}
 
 {% block recent_dumps %}
   {% linkdump_recent_dumps as recent_dumps %}
@@ -48,5 +48,19 @@
         {% endfor %}
       </tbody>
     </table>
+  {% endif %}
+{% endblock %}
+
+{% block dump_tags %}
+  {% keywords_for "linkdump.dump" as keywords %}
+  {% if keywords %}
+    <h4>{% trans "Link Tags" %}</h4>
+    <ul class="list-inline">
+      {% for keyword in keywords %}
+        <li style="font-size:{{ keyword.weight|mult:5|add:8 }}px;">
+          <a href="{% url "linkdump.views.link_dump_tag_list" keyword.slug %}">{{ keyword }}</a>
+        </li>
+      {% endfor %}
+    </ul>
   {% endif %}
 {% endblock %}

@@ -1,5 +1,4 @@
 from django.contrib import admin
-from mezzanine.core.admin import OwnableAdmin
 from mptt.admin import MPTTModelAdmin
 
 from .models import Dump, DumpCategory
@@ -12,7 +11,7 @@ class DumpAdmin(admin.ModelAdmin):
                     "user")
     list_filter = ("user", "category")
     search_fields = ("title", "description", "category__title")
-    fields = ("title", "link", "description", "category")
+    fields = ("title", "link", "description", "category", "tags")
     date_hierarchy = "created"
 
     def save_form(self, request, form, change):

@@ -1,10 +1,11 @@
+
 {% extends "base.html" %}
 {% load i18n future mptt_tags mezzanine_tags linkdump_filters %}
 
-{% block meta_title %}{{ category|default:"" }} {% trans "Links" %}{% endblock %}
+{% block meta_title %}{{ keyword.title }} {% trans "Links" %}{% endblock %}
 
 {% block meta_description %}{% metablock %}
-  {% trans "View shared links." %}
+  {% trans "View" %} {{ keyword.title }} {% trans "links." %}
 {% endmetablock %}{% endblock %}
 
 {% block extra_css %}
@@ -28,14 +29,12 @@
 
 {% block breadcrumb_menu %}
   {{ block.super }}
-  {% if category %}
-    <li>{% trans "Category:" %} {{ category }}</li>
-  {% endif %}
+  <li>{% trans "Tag:" %} {{ keyword.title }}</li>
 {% endblock %}
 
 {% block main %}
   {% if category %}
-    {% trans "Viewing links for the category" %} {{ category }}
+    {% trans "Viewing links for the tag" %} {{ keyword.title }}
   {% endif %}
 
   <table class="table table-hover table-striped table-condensed">
@@ -47,23 +46,13 @@
       </tr>
     </thead>
     <tbody>
-      {% recursetree categories %}
-        <tr class="active clickable">
-          <td colspan="3"><a href="{{ node.get_absolute_url }}">
-            {{ node.level|int_to_tabs|safe }}{{ node.title }}
-          </a></td>
+      {% for dump in dumps %}
+        <tr class="clickable">
+          <td><a href="{{ dump.get_absolute_url }}">{{ dump.title }}</a></td>
+          <td><a href="{{ dump.get_absolute_url }}">{{ dump.description }}</a></td>
+          <td><a href="{{ dump.get_absolute_url }}">{{ dump.views }}</a></td>
         </tr>
-        {% for dump in node.dumps.all %}
-          <tr class="clickable">
-            <td><a href="{{ dump.get_absolute_url }}">
-                {{ node.level|add:1|int_to_tabs|safe }}{{ dump.title }}
-            </a></td>
-            <td><a href="{{ dump.get_absolute_url }}">{{ dump.description }}</a></td>
-            <td><a href="{{ dump.get_absolute_url }}">{{ dump.views }}</a></td>
-          </tr>
-        {% endfor %}
-        {{ children }}
-      {% endrecursetree %}
+      {% endfor %}
     </tbody>
   </table>
 {% endblock %}
