@@ -27,5 +27,5 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP',
     ],
-    install_requires=['mezzanine'],
+    install_requires=['mezzanine', 'django-mptt'],
 )

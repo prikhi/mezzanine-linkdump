@@ -5,6 +5,12 @@ LinkDump
 LinkDump is a Mezzanine module that lets you create, display and track links.
 
 
+Prerequisites
+=============
+
+MPTT ``django-mptt`` will be installed by ``setup.py`` but it will need to be
+added to ``INSTALLED_APPS`` (see Usage below) for the admin views.
+
 Usage
 ======
 
@@ -17,6 +23,7 @@ Add it to your ``INSTALLED_APPS``::
     INSTALLED_APPS = (
         # ...
 
+        "mptt",
         "linkdump",
     )
 
