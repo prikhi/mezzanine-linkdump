@@ -4,21 +4,18 @@ LinkDump
 
 LinkDump is a Mezzanine module that lets you create, display and track links.
 
+Example usage can be seen at `SleepAnarchy.com`_
 
-Prerequisites
-=============
-
-MPTT ``django-mptt`` will be installed by ``setup.py`` but it will need to be
-added to ``INSTALLED_APPS`` (see Usage below) for the admin views.
 
 Usage
 ======
 
-Install via pip::
+Install the package and dependencies via pip::
 
     pip install mezzanine-linkdump
 
-Add it to your ``INSTALLED_APPS``::
+Add the ``linkdump`` app and the ``mptt`` dependency to your
+``INSTALLED_APPS``::
 
     INSTALLED_APPS = (
         # ...
@@ -53,3 +50,17 @@ The following settings may be specified in your project's ``settings.py``:
 
 * ``LINKDUMP_SLUG_CHOICES`` - Characters used for link slugs.
 * ``LINKDUMP_SLUG_LENGTH`` - Length of generated slugs.
+
+
+Contributing
+=============
+
+You can install prerequisites using ``pip``::
+
+    pip install -r requirements.txt
+
+The official bug tracker lives at
+http://bugs.sleepanarchy.com/projects/mezzanine-linkdump/, but a github mirror
+is available for pull requests at http://github.com/prikhi/mezzanine-linkdump/.
+
+.. _SleepAnarchy.com:       http://sleepanarchy.com/links/
